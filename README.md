@@ -1,5 +1,5 @@
 # simple-raycaster
-Simple raycaster engine, made for testing purposes
+Simple raycaster engine, made for testing purposes.
 
 ## Dependencies
 LÖVE 11.4

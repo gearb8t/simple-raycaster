@@ -6,10 +6,10 @@
  <tileset firstgid="1" name="tiles" tilewidth="64" tileheight="64" tilecount="8" columns="8">
   <image source="../img/tiles.png" width="512" height="64"/>
  </tileset>
- <imagelayer id="2" name="Image Layer 1" visible="0" repeatx="1" repeaty="1">
-  <image source="../img/bg1.png" width="256" height="200"/>
+ <imagelayer id="2" name="Image Layer 1" offsetx="0" offsety="-50" parallaxx="0" parallaxy="0">
+  <image source="../img/clouds.jpg" width="256" height="205"/>
  </imagelayer>
- <imagelayer id="3" name="Copy of Image Layer 1" visible="0" repeatx="1">
+ <imagelayer id="3" name="Copy of Image Layer 1" repeatx="1">
   <image source="../img/bg2.png" width="640" height="240"/>
  </imagelayer>
  <layer id="1" name="Tile Layer 1" width="24" height="24">

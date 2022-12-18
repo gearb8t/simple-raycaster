@@ -1,0 +1,16 @@
+require "src.lib.init"
+
+require "src.util"
+require "src.input"
+require "src.gamestate"
+require "src.vec2"
+require "src.map"
+require "src.ray"
+require "src.timer"
+require "src.player"
+
+require "src.state.menu"
+require "src.state.fade"
+require "src.state.play"
+require "src.state.pause"
+require "src.state.config"

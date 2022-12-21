@@ -71,6 +71,8 @@ function PlayState:drawFirstPerson()
 	if not player then return false end
 	local FOV = math.rad(FOV)
 	local ground_y = HEIGHT/2
+	local proj_depth = (WIDTH/2)/math.tan(FOV/2)
+	local player_h = player.h*player.bounce.h
 
 	-- background
 	self.map:drawBackgrounds(player.dir)
@@ -92,7 +94,6 @@ function PlayState:drawFirstPerson()
 			dir,
 			self.map
 		)
-		local proj_depth = (WIDTH/2)/math.tan(FOV/2)
 		local depth = depth*math.cos(dir-player.dir)
 		local wall_h = self.map.tilesize/depth*proj_depth
 		local ratio = proj_depth/depth
@@ -103,7 +104,7 @@ function PlayState:drawFirstPerson()
 				love.graphics.draw(
 					self.map.tileset.image,
 					self.map.tileset.slices[t_id][txt_off],
-					x-1, ground_y-wall_h*z+ratio*player.h,
+					x-1, ground_y-wall_h*z+ratio*player_h,
 					0,
 					1, wall_h/self.map.tilesize
 				)

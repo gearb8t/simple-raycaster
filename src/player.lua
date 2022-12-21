@@ -1,12 +1,15 @@
 Player = class("Player")
 
 function Player:init(x, y)
-	self.x, self.y = x or 0, y or 0
+	self.x = x or 0
+	self.y = y or 0
 	self.spd = Vec2()
-	self.walk_spd, self.turn_spd = 10, 5
-	self.r, self.h = 10, 40
-	self.bounce = 0
+	self.walk_spd = 10
+	self.turn_spd = 5
+	self.r = 10
+	self.h = 40
 	self.dir = 0
+	self.bounce = {h = 1, a = 0}
 end
 
 function Player:handleInput(dt)
@@ -32,13 +35,13 @@ function Player:handleInput(dt)
 	self.dir = self.dir+turn*math.rad(self.turn_spd)*60*dt
 
 	-- bounce
-	local moving = (move_x ~= 0 or move_y ~= 0 or turn ~= 0)
-	if self.bounce == 0 and moving then
-		self.bounce = math.pi
+	local spd = math.rad(10*60*dt)
+	if self.bounce.a == 0 and (move_x ~= 0 or move_y ~= 0) then
+		self.bounce.a = math.pi
 	else
-		local spd = 20
-		self.bounce = math.max(0, self.bounce-math.rad(spd*60*dt))
+		self.bounce.a = math.max(0, self.bounce.a-spd)
 	end
+	self.bounce.h = 1+math.abs(math.sin(self.bounce.a))/4
 end
 
 function Player:update(dt)

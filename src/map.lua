@@ -131,7 +131,7 @@ function Map:drawBackgrounds(dir)
 	love.graphics.setColor(1, 1, 1)
 	for i,layer in ipairs(self.layers) do
 		if layer.type == "imagelayer" then
-			local off = -dir*100/(#self.layers-(i-1))
+			local off = -dir*500/(#self.layers-(i-1))
 			local x = off*layer.parallaxx
 			local y = 0
 			layer.quad:setViewport(-x, -y, WIDTH, HEIGHT)

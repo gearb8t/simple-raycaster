@@ -11,6 +11,7 @@ require "src.player"
 
 require "src.state.menu"
 require "src.state.fade"
+require "src.state.title"
+require "src.state.option"
 require "src.state.play"
 require "src.state.pause"
-require "src.state.config"

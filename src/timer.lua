@@ -24,6 +24,7 @@ function Timer:update(dt, over_func)
 end
 
 function Timer:getProgress()
+	if self.duration == 0 then return 1 end
 	local progress = self.time/self.duration
 	return self.reverse and 1-progress or progress
 end

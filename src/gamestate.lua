@@ -31,10 +31,25 @@ function GameState:update(dt)
 	end
 end
 
-function GameState:draw()
+function GameState:getTopMenu()
+	local top_menu
 	for _,state in ipairs(self.states) do
+		local is_menu = (state.super and state.super.name == "MenuState")
+		if is_menu then
+			top_menu = state
+		end
+	end
+	return top_menu
+end
+
+function GameState:draw()
+	local top_menu = self:getTopMenu()
+	for _,state in ipairs(self.states) do
+		local is_menu = (state.super and state.super.name == "MenuState")
 		if state.draw then
-			state:draw()
+			if not is_menu or state == top_menu then
+				state:draw()
+			end
 		end
 	end
 end

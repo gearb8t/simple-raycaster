@@ -9,27 +9,35 @@ FOV = 60
 DEBUG = false
 
 KEYS = {
-	left    = {"a"},
-	right   = {"d"},
-	up      = {"w", "up"},
-	down    = {"s", "down"},
-	turn_l  = {"left"},
-	turn_r  = {"right"},
-	confirm = {"z", "return"},
-	cancel  = {"x", "escape"},
-	pause   = {"escape", "return"},
+	up       = {"w", "up"},
+	down     = {"s", "down"},
+	left     = {"a", "left"},
+	right    = {"d", "right"},
+	strafe_l = {"a"},
+	strafe_r = {"d"},
+	turn_l   = {"left"},
+	turn_r   = {"right"},
+	confirm  = {"z", "return"},
+	cancel   = {"x", "escape"},
+	pause    = {"escape", "return"},
 }
 
--- display
---love.graphics.setDefaultFilter("nearest", "nearest")
---love.graphics.setLineStyle("rough")
-love.window.setMode(WIDTH*WINDOW_SCALE, HEIGHT*WINDOW_SCALE, {})
-love.mouse.setVisible(false)
-local canvas = love.graphics.newCanvas(WIDTH, HEIGHT)
+function updateDisplay()
+	love.window.setMode(
+		WIDTH*WINDOW_SCALE,
+		HEIGHT*WINDOW_SCALE,
+		{fullscreen = FULLSCREEN}
+	)
+end
+updateDisplay()
 
+local canvas
 function love.load()
-	GameState:push(PlayState("res.map.test"))
-	GameState:push(FadeState(30, nil, true))
+	love.graphics.setDefaultFilter("nearest", "nearest")
+	love.graphics.setLineStyle("rough")
+	love.mouse.setVisible(false)
+	canvas = love.graphics.newCanvas(WIDTH, HEIGHT)
+	GameState:push(TitleState())
 end
 
 function love.update(dt)

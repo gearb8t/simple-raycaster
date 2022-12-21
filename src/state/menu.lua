@@ -4,17 +4,12 @@ function MenuState:init(title, items)
 	self.title = title or ""
 	self.items = items or {}
 	self.selection = 1
-	self.fade = Timer(10)
 	self.font = love.graphics.newFont("res/font/terminus.ttf", 20)
 	self.font_bold = love.graphics.newFont("res/font/terminus-bold.ttf", 20)
 end
 
 function MenuState:onExit()
-	self.fade:revert()
-	self.fade.onFinish =
-		function()
-			GameState:pop()
-		end
+	GameState:pop()
 end
 
 function MenuState:moveSelection(a, loop)
@@ -31,9 +26,6 @@ function MenuState:moveSelection(a, loop)
 end
 
 function MenuState:update(dt)
-	self.fade:update(dt)
-	if not self.fade.over then return end
-
 	-- input
 	local move = 
 		(love.keyboard.wasPressed(KEYS.down) and 1 or 0)
@@ -47,62 +39,90 @@ function MenuState:update(dt)
 			   table.check(KEYS.cancel, key) then
 				self:onExit()
 			elseif self.items[self.selection] then
-				local onKeyPress =self.items[self.selection].onKeyPress
-				if onKeyPress then
-					onKeyPress(self, key)
+				local item = self.items[self.selection]
+				if item.onKeyPress then
+					item.onKeyPress(self, key, item)
 				end
 			end
 		end
 	end
 end
 
-function MenuState:getLargestItem()
+function MenuState:getMaxLen()
 	local max_len, max
 	for i,item in ipairs(self.items) do
-		if item.label then
-			local len = string.len(item.label)
-			if not max or len > max_len then
-				max = i
-				max_len = len
-			end
+		local len = string.len(self:getItemText(i, true))
+		if not max or len > max_len then
+			max_len = len
+			max = i
 		end
 	end
 	return max_len, max
 end
 
-function MenuState:draw()
-	local alpha = self.fade:getProgress()
+function MenuState:getItemText(i, ignore_value)
+	local item = self.items[i]
+	local text = item.label
+	if not ignore_value and item.value ~= nil then
+		local max_len = self:getMaxLen()
+		local padding = 1+max_len-string.len(item.label)
+		local text = text..string.rep(" ", padding)
+		if type(item.value) == "boolean" then
+			return text..(item.value and "ON" or "OFF")
+		else
+			return text..item.value
+		end
+	else
+		return text
+	end
+end
 
-	-- background
-	love.graphics.setColor(0, 0, 0, alpha*.5)
+function MenuState:drawBackground()
+	love.graphics.setColor(0, 0, 0, .5)
 	love.graphics.rectangle( "fill", 0, 0, WIDTH, HEIGHT)
+end
 
-	-- title
-	love.graphics.setColor(1, 1, 1, alpha+.5)
+function MenuState:drawTitle()
+	love.graphics.setColor(1, 1, 1)
 	love.graphics.printf(
 		self.title, self.font_bold,
-		5, 1,
+		10, 1,
 		WIDTH, "left",
 		0,
-		.8, .8,
+		1, 1,
 		0, 0,
-		-.2, 0
+		-.25, 0
 	)
+end
 
-	-- text
+function MenuState:drawItems()
 	local font_h = self.font:getHeight()
+	local sel_char = "▶"
+	local max_len, max = self:getMaxLen()
+	local max_w = self.font:getWidth(self:getItemText(max))
+	local x = (WIDTH-max_w)/2
+	local y = (HEIGHT-font_h*#self.items)/2
+	love.graphics.setColor(1, 1, 1)
 	for i,item in ipairs(self.items) do
 		if item.label then
-			local max_len, max = self:getLargestItem()
-			local x = (WIDTH-self.font:getWidth(self.items[max].label))/2
-			local y = (HEIGHT-font_h*#self.items)/2+font_h*(i-1)
-			local sel = (self.selection == i) and "▶" or " "
-			love.graphics.setColor(1, 1, 1, alpha)
+			local y = y+font_h*(i-1)
 			love.graphics.printf(
-				sel..item.label, self.font,
+				self:getItemText(i), self.font,
 				x, y,
 				WIDTH, "left"
 			)
 		end
 	end
+	love.graphics.printf(
+		sel_char, self.font,
+		x-self.font:getWidth(' '),
+		y+font_h*(self.selection-1),
+		WIDTH, "left"
+	)
+end
+
+function MenuState:draw()
+	self:drawBackground()
+	self:drawTitle()
+	self:drawItems()
 end

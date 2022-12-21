@@ -12,8 +12,8 @@ end
 function Player:handleInput(dt)
 	-- movement
 	local move_x =
-		(love.keyboard.isDown(KEYS.right) and 1 or 0)
-		-(love.keyboard.isDown(KEYS.left) and 1 or 0)
+		(love.keyboard.isDown(KEYS.strafe_r) and 1 or 0)
+		-(love.keyboard.isDown(KEYS.strafe_l) and 1 or 0)
 	local move_y =
 		(love.keyboard.isDown(KEYS.down) and 1 or 0)
 		-(love.keyboard.isDown(KEYS.up) and 1 or 0)
@@ -42,6 +42,10 @@ function Player:handleInput(dt)
 end
 
 function Player:update(dt)
+	local state = GameState:getState()
+	local map = state.map
+	self.t_x, self.t_y = map:pixelToTile(self.x, self.y)
+
 	self:handleInput(dt)
 end
 

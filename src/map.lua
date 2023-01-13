@@ -2,15 +2,19 @@ Map = class("Map")
 
 function Map:init(path)
 	local map = require(path)
-	self.w, self.h = map.width, map.height
+	self.w = map.width
+	self.h = map.height
 	self.tilesize = map.tilewidth
 	self.layers = map.layers
 	self.tileset = map.tilesets[1]
 
+	if map.loaded then return end
+	map.loaded = true
+
 	-- generate images
 	for z,layer in ipairs(self.layers) do
 		if layer.type == "imagelayer" then
-			local img_path = "res/"..string.gsub(layer.image, "%.%./", "")
+			local img_path = "res/"..formatPath(layer.image)
 			layer.image = love.graphics.newImage(img_path)
 			layer.image:setWrap(
 				(layer.repeatx and "repeat" or "clampzero"),
@@ -26,7 +30,7 @@ function Map:init(path)
 	end
 
 	-- generate tileset
-	local img_path = string.gsub(self.tileset.image, "%.%./", "res/")
+	local img_path = "res/"..formatPath(self.tileset.image)
 	self.tileset.image = love.graphics.newImage(img_path)
 	self.tileset.quads = {}
 	self.tileset.slices = {}
@@ -76,9 +80,7 @@ function Map:generateObj()
 			for _,o in ipairs(layer.objects) do
 				local path = o.properties.path
 				if path then
-					path = string.gsub(o.properties.path, "%.%./", "")
-					path = string.gsub(o.properties.path, "/", ".")
-					path = string.gsub(o.properties.path, "%.lua", "")
+					path = formatPath(o.properties.path, "lua")
 					local new_o = require(path)(o.x, o.y)
 					table.insert(obj, new_o)
 					world:add(
@@ -94,7 +96,11 @@ function Map:generateObj()
 end
 
 function Map:isInside(x, y)
-	return x >= 0 and y >= 0 and x < self.w and y < self.h
+	return
+		x >= 0 and
+		y >= 0 and
+		x < self.w and
+		y < self.h
 end
 
 function Map:getDimensions()

@@ -17,6 +17,7 @@ KEYS = {
 	strafe_r = {"d"},
 	turn_l   = {"left"},
 	turn_r   = {"right"},
+	q_turn   = {"lshift"},
 	confirm  = {"z", "return"},
 	cancel   = {"x", "escape"},
 	pause    = {"escape", "return"},

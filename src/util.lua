@@ -16,19 +16,21 @@ function floor(a)
 	return func(a)
 end
 
+function formatPath(str, mode)
+	str = string.gsub(str, "%.%./", "")
+	if mode == "lua" then
+		str = string.gsub(str, "/", ".")
+		str = string.gsub(str, "%.lua", "")
+	end
+	return str
+end
+
 function pixelToTile(x, y)
 	return math.floor(x/TILESIZE), math.floor(y/TILESIZE)
 end
 
 function tileToPixel(x, y)
 	return x*TILESIZE, y*TILESIZE
-end
-
-function formatPath(str)
-	str = string.gsub(str, "%.%./", "")
-	str = string.gsub(str, "/", ".")
-	str = string.gsub(str, "%.lua", "")
-	return str
 end
 
 function table.check(table, val)
